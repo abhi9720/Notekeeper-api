@@ -5,7 +5,7 @@ const User = require('../models/User');
 // Create a new note
 exports.createNote = async (req, res) => {
     try {
-        const { title, color, body, listType, listItems, reminder } = req.body;
+        const { title, color, body, listType, listItems, notebookId, reminder } = req.body;
         const createdBy = req.user.id;
 
 
@@ -16,6 +16,7 @@ exports.createNote = async (req, res) => {
             listType,
             listItems,
             createdBy,
+            notebook: notebookId,
             isReminder: reminder ? true : false,
             reminder: reminder ? new Date(reminder) : null,
         });
@@ -35,8 +36,8 @@ exports.createNote = async (req, res) => {
 
 exports.updateCheckbox = async (req, res) => {
     try {
-        const { noteId, listItemIndex } = req.params;
-        const { checked } = req.body;
+        const { noteId } = req.params;
+        const { listItemIndex, checked } = req.body;
 
         const note = await Note.findById(noteId);
 
@@ -52,11 +53,11 @@ exports.updateCheckbox = async (req, res) => {
     }
 };
 
-// Get all user-specific notes
-exports.getUserNotes = async (req, res) => {
+exports.getUserNotesByNoteBook = async (req, res) => {
     try {
         const userId = req.user.id;
-        const notes = await Note.find({ createdBy: userId }).populate('sharedWith');
+        const { notebookId } = req.params;
+        const notes = await Note.find({ createdBy: userId, notebook: notebookId }).populate('sharedWith');
         res.json(notes);
     } catch (error) {
         console.error(error);
@@ -129,3 +130,40 @@ exports.deleteNote = async (req, res) => {
     }
 };
 
+exports.toggleNotePin = async (req, res) => {
+    try {
+        const { noteId } = req.params;
+        const createdBy = req.user.id;
+        const note = await Note.findOne({ _id: noteId, createdBy });
+
+
+        if (!note) {
+            return res.status(404).json({ error: 'Note not found.' });
+        }
+
+        // Toggle the isPinned status
+        note.isPinned = !note.isPinned;
+
+        // Save the updated note
+        const updatedNote = await note.save();
+
+        res.json(updatedNote);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to toggle note pin status.' });
+    }
+};
+
+
+exports.getPinnedNotes = async (req, res) => {
+    console.log("------------------");
+    try {
+        const userId = req.user.id;
+
+        const pinnedNotes = await Note.find({ createdBy: userId, isPinned: true });
+
+        res.json(pinnedNotes);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Failed to fetch pinned notes.' });
+    }
+};

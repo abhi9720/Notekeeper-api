@@ -30,10 +30,12 @@ app.use(cors());
 const noteRoutes = require('./routes/notesRoutes');
 const authRoutes = require('./routes/authRoutes');
 const shareRoutes = require('./routes/sharingRoutes');
+const NoteBookRoutes = require('./routes/NoteBookRoutes');
 
 app.use('/v1/note', noteRoutes);
 app.use('/v1/share', shareRoutes);
 app.use('/v1/auth', authRoutes);
+app.use('/v1/notebooks', NoteBookRoutes);
 
 // Serve the Angular app from the 'public' directory
 app.use(express.static('public'));

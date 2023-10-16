@@ -5,17 +5,15 @@ const verifyToken = require('../middleware/authMiddleware');
 
 // Create a new note
 router.post('/', verifyToken, noteController.createNote);
-
-// Get all notes
-router.get('/', noteController.getUserNotes);
-
-// Update a note's checkbox items
-router.put('/:noteId/update-checkbox/:listItemIndex', verifyToken, noteController.updateCheckbox);
-
-// update note
+router.get('/:notebookId', verifyToken, noteController.getUserNotesByNoteBook);
 router.put('/:noteId', verifyToken, noteController.updateNote);
-
-// Delete a note
 router.delete('/:noteId', verifyToken, noteController.deleteNote);
+
+router.put('/:noteId/update-checkbox/', verifyToken, noteController.updateCheckbox);
+router.put('/:noteId/pin', verifyToken, noteController.toggleNotePin);
+router.get('/pinned/all', verifyToken, noteController.getPinnedNotes)
+
+
+
 
 module.exports = router;

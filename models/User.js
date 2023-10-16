@@ -31,5 +31,13 @@ userSchema.pre('save', function (next) {
 });
 
 
+userSchema.methods.sanitizeUser = function () {
+    const user = this.toObject();
+    delete user.password;
+    delete user.sharedNotes;
+    return user;
+};
+
+
 const User = mongoose.model('User', userSchema);
 module.exports = User;

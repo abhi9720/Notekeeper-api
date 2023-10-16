@@ -17,7 +17,10 @@ const noteSchema = new Schema({
     isReminder: { type: Boolean, default: false },
     reminder: {
         dateTime: Date,
-    }
+    },
+    isPinned: { type: Boolean, default: false },
+    notebook: { type: Schema.Types.ObjectId, ref: 'Notebook' },
+
 });
 
 module.exports = mongoose.model('Note', noteSchema);
