@@ -8,7 +8,9 @@ exports.createNote = async (req, res) => {
         const { title, color, body, listType, listItems, notebookId, reminder } = req.body;
         const createdBy = req.user.id;
 
+        console.log(req.body, title, color, body, listType, listItems, notebookId, reminder);
 
+        console.log(reminder ? true : false);
         const note = new Note({
             title,
             color,
@@ -17,9 +19,11 @@ exports.createNote = async (req, res) => {
             listItems,
             createdBy,
             notebook: notebookId,
-            isReminder: reminder ? true : false,
-            reminder: reminder ? new Date(reminder) : null,
+            isRemainder: reminder ? true : false,
+            remainderDate: reminder ? new Date(reminder) : null,
         });
+
+        console.log(note);
 
         const savedNote = await note.save();
 
@@ -155,7 +159,7 @@ exports.toggleNotePin = async (req, res) => {
 
 
 exports.getPinnedNotes = async (req, res) => {
-    console.log("------------------");
+
     try {
         const userId = req.user.id;
 
@@ -167,3 +171,20 @@ exports.getPinnedNotes = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch pinned notes.' });
     }
 };
+
+
+exports.getRemainders = async (req, res) => {
+
+    try {
+        const userId = req.user.id;
+
+        const remainder = await Note.find({ createdBy: userId, isRemainder: true });
+
+        res.json(remainder);
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Failed to fetch Remainder notes.' });
+    }
+
+}

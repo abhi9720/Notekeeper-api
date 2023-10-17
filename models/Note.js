@@ -14,9 +14,9 @@ const noteSchema = new Schema({
     ],
     createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
     sharedWith: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-    isReminder: { type: Boolean, default: false },
-    reminder: {
-        dateTime: Date,
+    isRemainder: { type: Boolean, default: false },
+    remainderDate: {
+        type: Date,
     },
     isPinned: { type: Boolean, default: false },
     notebook: { type: Schema.Types.ObjectId, ref: 'Notebook' },
