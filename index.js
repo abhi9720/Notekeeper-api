@@ -12,9 +12,9 @@ dotenv.config();
 
 
 const corsOptions = {
-    origin: 'https://notewisepro.netlify.app',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    optionsSuccessStatus: 204,
+    origin: '*',
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'UPDATE'],
+    allowedHeaders: "*",
 };
 
 
