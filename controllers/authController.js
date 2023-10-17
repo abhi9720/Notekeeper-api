@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const EmailSender = require('../services/EmailSender');
 
 // Register a new user
 const register = async (req, res) => {
@@ -17,7 +18,11 @@ const register = async (req, res) => {
         await newUser.save();
 
         const token = generateToken(newUser);
-
+        const data = {
+            username: username,
+            loginUrl: process.env.frontendURL
+        }
+        new EmailSender().sendEmail(email, `Welcome to NotewisePro`, 'welcome_email_template', data)
         res.json({ token });
     } catch (error) {
         console.log(error);

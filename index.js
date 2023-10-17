@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
-
+const ReminderScheduler = require('./services/ReminderScheduler');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -31,6 +31,10 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
 
 app.use(bodyParser.json());
 app.use(cors(corsOptions));
+
+
+const reminderScheduler = new ReminderScheduler();
+reminderScheduler.start();
 
 // API Routes
 const noteRoutes = require('./routes/notesRoutes');

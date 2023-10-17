@@ -20,7 +20,7 @@ const noteSchema = new Schema({
     },
     isPinned: { type: Boolean, default: false },
     notebook: { type: Schema.Types.ObjectId, ref: 'Notebook' },
-
+    hasSentReminder: { type: Boolean, default: false },
 });
 
 module.exports = mongoose.model('Note', noteSchema);

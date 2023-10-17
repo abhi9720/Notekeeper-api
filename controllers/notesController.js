@@ -5,12 +5,12 @@ const User = require('../models/User');
 // Create a new note
 exports.createNote = async (req, res) => {
     try {
-        const { title, color, body, listType, listItems, notebookId, reminder } = req.body;
+        const { title, color, body, listType, listItems, notebookId, remainderDate } = req.body;
         const createdBy = req.user.id;
 
-        console.log(req.body, title, color, body, listType, listItems, notebookId, reminder);
+        console.log(req.body, title, color, body, listType, listItems, notebookId, remainderDate);
 
-        console.log(reminder ? true : false);
+        console.log(remainderDate ? true : false);
         const note = new Note({
             title,
             color,
@@ -19,8 +19,8 @@ exports.createNote = async (req, res) => {
             listItems,
             createdBy,
             notebook: notebookId,
-            isRemainder: reminder ? true : false,
-            remainderDate: reminder ? new Date(reminder) : null,
+            isRemainder: remainderDate ? true : false,
+            remainderDate: remainderDate ? new Date(remainderDate) : null,
         });
 
         console.log(note);
@@ -121,11 +121,23 @@ exports.deleteNote = async (req, res) => {
 
         // Check if the note belongs to the user
         const note = await Note.findOne({ _id: noteId, createdBy });
+
         if (!note) {
             return res.status(403).json({ error: 'Access denied. You do not have permission to delete this note.' });
         }
-        await Note.deleteOne({ _id: noteId });
 
+        // Check if the note is shared with other users
+        if (note.sharedWith.length > 0) {
+            // Remove shared references in the SharedNote collection
+            await SharedNote.deleteMany({ note: noteId });
+
+            // Remove shared references from the note itself
+            note.sharedWith = [];
+            await note.save();
+        }
+
+        // Delete the note
+        await Note.deleteOne({ _id: noteId });
 
         res.json({ message: 'Note deleted successfully.' });
     } catch (error) {
@@ -133,6 +145,7 @@ exports.deleteNote = async (req, res) => {
         res.status(500).json({ error: 'Failed to delete the note.' });
     }
 };
+
 
 exports.toggleNotePin = async (req, res) => {
     try {
@@ -163,7 +176,7 @@ exports.getPinnedNotes = async (req, res) => {
     try {
         const userId = req.user.id;
 
-        const pinnedNotes = await Note.find({ createdBy: userId, isPinned: true });
+        const pinnedNotes = await Note.find({ createdBy: userId, isPinned: true }).populate("notebook");
 
         res.json(pinnedNotes);
     } catch (error) {
