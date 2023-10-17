@@ -11,6 +11,12 @@ const port = process.env.PORT || 3000;
 dotenv.config();
 
 
+const corsOptions = {
+    origin: 'https://notewisepro.netlify.app',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    optionsSuccessStatus: 204,
+};
+
 
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true },)
@@ -24,7 +30,7 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
 
 
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors(corsOptions));
 
 // API Routes
 const noteRoutes = require('./routes/notesRoutes');
