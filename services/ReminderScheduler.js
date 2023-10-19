@@ -13,7 +13,7 @@ class ReminderScheduler {
         console.log("cron job running");
         const fifteenMinutesFromNow = new Date(Date.now() + 15 * 60 * 1000);
 
-        schedule.scheduleJob('*/1 * * * *', async () => {
+        schedule.scheduleJob('*/10 * * * *', async () => {
             console.log("running.........");
             try {
                 const notes = await Note.find({
