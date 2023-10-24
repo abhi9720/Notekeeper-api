@@ -6,7 +6,6 @@ const userSchema = new mongoose.Schema({
     password: String,
     email: String,
     profilePhoto: String,
-    sharedNotes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'SharedNote' }],
 });
 
 userSchema.methods.comparePassword = function (candidatePassword) {

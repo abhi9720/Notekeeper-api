@@ -1,7 +1,8 @@
 const express = require('express');
-const router = express.Router();
-const sharingController = require('../controllers/sharingController');
+const sharingController = require('../controllers/NotesharingController');
 const verifyToken = require('../middleware/authMiddleware');
+
+const router = express.Router();
 
 // Define routes for sharing and managing shared notes
 router.post('/', verifyToken, sharingController.shareNote);

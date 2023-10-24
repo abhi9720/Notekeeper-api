@@ -34,7 +34,7 @@ const shareNote = async (req, res) => {
         await sharedNote.save();
 
         // Update the user's sharedNotes field
-        user.sharedNotes.push(sharedNote._id);
+        // user.sharedNotes.push(sharedNote._id);
         note.sharedWith.push(user._id);
         await user.save();
         await note.save();
@@ -73,8 +73,6 @@ const updateSharedNote = async (req, res) => {
         if (typeof permissions !== 'object' || permissions === null) {
             return res.status(400).json({ error: 'Invalid permissions object.' });
         }
-
-
 
         // Check if the authenticated user has the authorization to update this shared note
         const sharedNote = await SharedNote.findById(sharedNoteId).populate('note');
@@ -117,7 +115,7 @@ const unshareNote = async (req, res) => {
         }
 
         // Remove the shared note reference from the user
-        await User.findByIdAndUpdate(sharedNote.sharedWith, { $pull: { sharedNotes: sharedNote._id } });
+        // await User.findByIdAndUpdate(sharedNote.sharedWith, { $pull: { sharedNotes: sharedNote._id } });
 
         // Remove the shared note reference from the note
         await Note.findByIdAndUpdate(sharedNote.note, { $pull: { sharedWith: sharedNote.sharedWith } });

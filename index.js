@@ -37,14 +37,16 @@ const reminderScheduler = new ReminderScheduler();
 reminderScheduler.start();
 
 // API Routes
-const noteRoutes = require('./routes/notesRoutes');
 const authRoutes = require('./routes/authRoutes');
-const shareRoutes = require('./routes/sharingRoutes');
+const noteRoutes = require('./routes/notesRoutes');
+const NoteSharingRoutes = require('./routes/NoteSharingRoutes');
+const NotebookSharingRoutes = require('./routes/NoteBookSharingRoutes');
 const NoteBookRoutes = require('./routes/NoteBookRoutes');
 
-app.use('/v1/note', noteRoutes);
-app.use('/v1/share', shareRoutes);
 app.use('/v1/auth', authRoutes);
+app.use('/v1/note', noteRoutes);
+app.use('/v1/shared-notes', NoteSharingRoutes);
+app.use('/v1/shared-notebooks', NotebookSharingRoutes);
 app.use('/v1/notebooks', NoteBookRoutes);
 
 // Serve the Angular app from the 'public' directory

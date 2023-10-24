@@ -12,6 +12,7 @@ const sharedNoteSchema = new mongoose.Schema({
     permissions: {
         view: Boolean,
         edit: Boolean,
+        delete: Boolean
     },
 });
 

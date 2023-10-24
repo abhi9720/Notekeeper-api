@@ -41,7 +41,7 @@ exports.getNotebookById = async (req, res) => {
     try {
         const authUserId = req.user.id;
         const { notebookId } = req.params
-        const noteBook = await Notebook.find({ _id: notebookId, createdBy: authUserId });
+        const noteBook = await Notebook.findOne({ _id: notebookId, createdBy: authUserId });
 
         if (!noteBook) {
             return res.status(404).json({ error: 'Notebook not found or not owned by the authenticated user.' });
