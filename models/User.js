@@ -8,6 +8,8 @@ const userSchema = new mongoose.Schema({
     profilePhoto: String,
 });
 
+userSchema.index({ email: 1 });
+
 userSchema.methods.comparePassword = function (candidatePassword) {
     return bcrypt.compareSync(candidatePassword, this.password);
 };

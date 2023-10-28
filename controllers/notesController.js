@@ -61,7 +61,10 @@ exports.getUserNotesByNoteBook = async (req, res) => {
     try {
         const userId = req.user.id;
         const { notebookId } = req.params;
-        const notes = await Note.find({ createdBy: userId, notebook: notebookId }).populate('sharedWith');
+        const notes = await Note.find({ createdBy: userId, notebook: notebookId }).populate({
+            path: 'sharedWith',
+            select: '-password'
+        });
         res.json(notes);
     } catch (error) {
         console.error(error);

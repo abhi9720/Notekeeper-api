@@ -9,42 +9,47 @@ const shareNote = async (req, res) => {
     try {
         const { noteId, sharedWith, permissions } = req.body;
         const authUserId = req.user?.id;
-
         console.log(noteId, sharedWith, permissions, authUserId);
-        // Check if the note and user exist
         const note = await Note.findOne({ _id: noteId, createdBy: authUserId });
-        const user = await User.findOne({ email: sharedWith });
 
         if (!note) {
             return res.status(404).json({ error: 'Note not found or not owned by the authenticated user.' });
         }
 
-        if (!user) {
-            return res.status(404).json({ error: 'User not found.' });
+        // Loop through the sharedWith array and process each email
+        for (const email of sharedWith) {
+            const user = await User.findOne({ email });
+
+            if (!user) {
+                return res.status(404).json({ error: `User with email ${email} not found.` });
+            }
+
+            // Create a shared note entry for each user
+            const sharedNote = new SharedNote({
+                note: note._id,
+                sharedWith: user._id,
+                permissions,
+            });
+
+            // Save the shared note entry
+            await sharedNote.save();
+
+            // Update the user's sharedNotes field
+            note.sharedWith.push(user._id);
+
+            // Save changes to user and note
+            await user.save();
         }
 
-        // Create a shared note entry
-        const sharedNote = new SharedNote({
-            note: note._id,
-            sharedWith: user._id,
-            permissions,
-        });
-
-        // Save the shared note entry
-        await sharedNote.save();
-
-        // Update the user's sharedNotes field
-        // user.sharedNotes.push(sharedNote._id);
-        note.sharedWith.push(user._id);
-        await user.save();
         await note.save();
 
-        res.json(sharedNote);
+        res.json({ message: 'Notes shared successfully' });
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: 'Failed to share the note.' });
     }
 };
+
 
 // Get notes shared with the user
 const getSharedNotes = async (req, res) => {

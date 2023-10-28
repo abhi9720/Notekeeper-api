@@ -6,11 +6,11 @@ const dotenv = require('dotenv');
 const ReminderScheduler = require('./services/ReminderScheduler');
 const app = express();
 const port = process.env.PORT || 3000;
-
+const morgan = require('morgan')
 // Load environment variables from .env file
 dotenv.config();
 
-
+app.use(morgan('dev'))
 const corsOptions = {
     origin: '*',
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'UPDATE'],
@@ -42,10 +42,11 @@ const noteRoutes = require('./routes/notesRoutes');
 const NoteSharingRoutes = require('./routes/NoteSharingRoutes');
 const NotebookSharingRoutes = require('./routes/NoteBookSharingRoutes');
 const NoteBookRoutes = require('./routes/NoteBookRoutes');
-
+const userRoutes = require('./routes/UserRoutes');
 app.use('/v1/auth', authRoutes);
+app.use('/v1/users', userRoutes)
 app.use('/v1/note', noteRoutes);
-app.use('/v1/shared-notes', NoteSharingRoutes);
+app.use('/v1/share-notes', NoteSharingRoutes);
 app.use('/v1/shared-notebooks', NotebookSharingRoutes);
 app.use('/v1/notebooks', NoteBookRoutes);
 

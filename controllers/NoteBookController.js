@@ -21,8 +21,17 @@ exports.createNotebook = async (req, res) => {
 exports.getNotebooks = async (req, res) => {
     try {
         const authUserId = req.user.id;
+        const populate = req.query.populate;
 
-        const noteBooks = await Notebook.find({ createdBy: authUserId })
+        let noteBooks = null;
+
+        console.log("Ispopulated : ", populate);
+        if (populate) {
+            noteBooks = await Notebook.find({ createdBy: authUserId }).populate("sharedWith")
+        }
+        else {
+            noteBooks = await Notebook.find({ createdBy: authUserId })
+        }
 
         if (!noteBooks) {
             return res.status(404).json({ message: "NoteBook Not Found" })
